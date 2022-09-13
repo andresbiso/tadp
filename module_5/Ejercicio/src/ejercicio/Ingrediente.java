@@ -1,4 +1,4 @@
-package com.tadp.spring.recipe;
+package ejercicio;
 
 public class Ingrediente {
 	private String nombre;
