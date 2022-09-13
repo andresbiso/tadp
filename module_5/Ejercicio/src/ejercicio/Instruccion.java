@@ -1,13 +1,13 @@
-package com.tadp.spring.recipe;
+package ejercicio;
 
 public class Instruccion {
 	private int numero;
-    private String descripcion;
-    
-    public Instruccion(int numero, String descripcion) {
-        setNumero(numero);
-        setDescripcion(descripcion);
-    }
+	private String descripcion;
+
+	public Instruccion(int numero, String descripcion) {
+	setNumero(numero);
+	setDescripcion(descripcion);
+	}
 
 	public int getNumero() {
 		return numero;
