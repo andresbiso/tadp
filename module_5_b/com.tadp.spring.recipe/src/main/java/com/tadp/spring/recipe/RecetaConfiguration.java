@@ -37,6 +37,6 @@ public class RecetaConfiguration {
     }
 	@Bean
     public Instruccion getInstruccionCuatro() {
-        return new Instruccion(4, "Poner en un recipiente, condimentar con aceite y mezclar");
+        return new Instruccion(4, "Colocar todo en un recipiente, condimentar con aceite y mezclar");
     }
 }
