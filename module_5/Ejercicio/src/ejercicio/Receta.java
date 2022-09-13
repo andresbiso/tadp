@@ -3,15 +3,31 @@ package ejercicio;
 import java.util.List;
 
 public class Receta {
-    private String nombre;
-    private final List<Ingrediente> ingredientes;
-    private final List<Instruccion> instrucciones;
+	private String nombre;
+    private List<Ingrediente> ingredientes;
+    private List<Instruccion> instrucciones;
 
     public Receta(String nombre, List<Ingrediente> ingredientes, List<Instruccion> instrucciones) {
         this.nombre = nombre;
         this.ingredientes = ingredientes;
         this.instrucciones = instrucciones;
     }
+	
+   public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public List<Ingrediente> getIngredientes() {
+		return ingredientes;
+	}
+
+	public List<Instruccion> getInstrucciones() {
+		return instrucciones;
+	}
 
     public void detallesReceta() {
         System.out.println("---Receta---");
@@ -24,10 +40,5 @@ public class Receta {
           for (Instruccion instruccion : instrucciones) {
             System.out.println(instruccion.toString());
         }
-    }
-
-    @Override
-    public String toString(){
-        return nombre;
     }
 }
