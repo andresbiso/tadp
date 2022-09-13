@@ -3,7 +3,7 @@ package ejercicio;
 import java.util.List;
 
 public class Receta {
-	private String nombre;
+    private String nombre;
     private List<Ingrediente> ingredientes;
     private List<Instruccion> instrucciones;
 
