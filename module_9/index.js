@@ -54,17 +54,51 @@ app.get("/burgers/:offset/:limit", async (req,res) =>{
     }    
 })
 
-app.get("/menu/:offset/:limit", async (req,res) =>{
+app.get("/frenchfries/:offset/:limit", async (req,res) =>{
     let { limit = 5, offset = 0 } = req.params;
     console.log(limit);
     try {
-        const query = Menu.find({}).skip(offset).limit(limit);
+        const query = PapasFritas.find({}).skip(offset).limit(limit);
         const callback = function(err, data) {
             if (err) {
                 console.log(err);
                 return;
             }
-            res.json({burgers: data});
+            res.json({french_fries: data});
+        }
+        query.exec(callback);
+    } catch(error) {
+        console.error(`Ocurrió un error: ${error}`);
+    }    
+})
+
+app.get("/menus/:offset/:limit", async (req,res) =>{
+    let { limit = 5, offset = 0 } = req.params;
+    console.log(limit);
+    try {
+        const query = Menu.aggregate([
+            { $match: {} }
+        ])
+        .lookup({
+            from: 'burgers',
+            localField: 'burgers',
+            foreignField: '_id',
+            as: 'burgers'
+        })
+        .lookup({
+            from: 'frenchfries',
+            localField: 'french_fries',
+            foreignField: '_id',
+            as: 'french_fries'
+        })
+        .skip(parseInt(offset))
+        .limit(parseInt(limit));
+        const callback = function(err, data) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            res.json({menus: data});
         }
         query.exec(callback);
     } catch(error) {
@@ -194,7 +228,6 @@ function createPapasFritas(name, price) {
 
 function createMenu(name, burgers, frenchFries) {  
     var menu = new Menu({ name: name, burgers: [...burgers], french_fries: [...frenchFries] });
-    console.log(menu);
     return menu.save();
 }
   
