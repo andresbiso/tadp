@@ -34,7 +34,7 @@ run().catch(console.dir);
 
 http.listen(PORT,() =>{
     console.log(`listening to ${PORT}`);
-})
+});
 
 app.get("/burgers/:offset/:limit", async (req,res) =>{
     let { limit = 5, offset = 0 } = req.params;
@@ -52,7 +52,7 @@ app.get("/burgers/:offset/:limit", async (req,res) =>{
     } catch(error) {
         console.error(`Ocurrió un error: ${error}`);
     }    
-})
+});
 
 app.get("/frenchfries/:offset/:limit", async (req,res) =>{
     let { limit = 5, offset = 0 } = req.params;
@@ -70,7 +70,7 @@ app.get("/frenchfries/:offset/:limit", async (req,res) =>{
     } catch(error) {
         console.error(`Ocurrió un error: ${error}`);
     }    
-})
+});
 
 app.get("/menus/:offset/:limit", async (req,res) =>{
     let { limit = 5, offset = 0 } = req.params;
@@ -104,7 +104,96 @@ app.get("/menus/:offset/:limit", async (req,res) =>{
     } catch(error) {
         console.error(`Ocurrió un error: ${error}`);
     }    
-})
+});
+
+app.post("/burger", function(req, res) {
+    const body = req.body;
+    if (Object.keys(req.body).length === 0) {
+        res.sendStatus(500);
+        res.end();
+        return;
+    }
+    if (!body.name) {
+        res.status(500).send("Name is missing");
+        res.end();
+        return;
+    }
+    if (!body.ingredients) {
+        res.status(500).send("Ingredients is missing");
+        res.end();
+        return;
+    }
+    if (!body.price) {
+        res.status(500).send("Price is missing");
+        res.end();
+        return;
+    }
+    
+    console.log(body);
+    createHamburguesa(body.name, body.ingredients, body.price);
+    console.log('Se ha creado hamburguesa ' + req.body.name);
+    res.sendStatus(200);
+    res.end();
+    return;
+});
+
+app.post("/frenchfries", function(req, res) {
+    const body = req.body;
+    if (Object.keys(req.body).length === 0) {
+        res.sendStatus(500);
+        res.end();
+        return;
+    }
+    if (!body.name) {
+        res.status(500).send("Name is missing");
+        res.end();
+        return;
+    }
+    if (!body.price) {
+        res.status(500).send("Price is missing");
+        res.end();
+        return;
+    }
+    
+    console.log(body);
+    createPapasFritas(body.name, body.price);
+    console.log('Se ha creado papas fritas ' + req.body.name);
+    res.sendStatus(200);
+    res.end();
+    return;
+});
+
+app.post("/menu", function(req, res) {
+    const body = req.body;
+    if (Object.keys(req.body).length === 0) {
+        res.sendStatus(500);
+        res.end();
+        return;
+    }
+    if (!body.name) {
+        res.status(500).send("Name is missing");
+        res.end();
+        return;
+    }
+    if (!body.burgers) {
+        res.status(500).send("Burgers is missing");
+        res.end();
+        return;
+    }
+    if (!body.french_fries) {
+        res.status(500).send("French_Fries is missing");
+        res.end();
+        return;
+    }
+    
+    console.log(body);
+    createMenuByNames(body.name, body.burgers, body.french_fries);
+    console.log('Se ha creado menú ' + req.body.name);
+    res.sendStatus(200);
+    res.end();
+    return;
+});
+
 
 
 function crearModelo() {
@@ -230,4 +319,28 @@ function createMenu(name, burgers, frenchFries) {
     var menu = new Menu({ name: name, burgers: [...burgers], french_fries: [...frenchFries] });
     return menu.save();
 }
-  
+
+function createMenuByNames(name, burgers, frenchFries) {  
+    hamburguesasMenu.length = 0;
+    papasFritasMenu.length = 0;
+    async.series([
+        function(callback) {
+            burgers.forEach(burgerName => {
+                Hamburguesa.find({name: burgerName}).then(function(data, err) {
+                    hamburguesasMenu.push(data[0]._id);
+                    callback(null, null);
+                });
+            });
+        },
+        function(callback) {
+            frenchFries.forEach(frenchFriesName => {
+                PapasFritas.find({name: frenchFriesName}).then(function(data, err) {
+                    papasFritasMenu.push(data[0]._id);
+                    callback(null, null);
+                });
+            });
+        }
+    ], function() {
+        createMenu(name, hamburguesasMenu, papasFritasMenu);
+    });
+}
